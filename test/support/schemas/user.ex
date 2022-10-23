@@ -8,9 +8,9 @@ defmodule EctoJuno.Schemas.User do
   import Ecto.Changeset
 
   schema "users" do
-    field(:name, :string)
-    field(:age, :integer)
-    field(:external_id, Ecto.UUID)
+    field :name, :string
+    field :age, :integer
+    field :external_id, Ecto.UUID
 
     timestamps()
   end

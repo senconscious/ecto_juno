@@ -10,7 +10,6 @@ defmodule EctoJuno.MixProject do
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
-      env: env(),
       preferred_cli_env: [
         "ecto.setup": :test,
         "ecto.reset": :test
@@ -45,6 +44,7 @@ defmodule EctoJuno.MixProject do
   defp mod(:test) do
     {EctoJuno.Application, []}
   end
+
   defp mod(_), do: {}
 
   defp aliases do
@@ -53,9 +53,5 @@ defmodule EctoJuno.MixProject do
       test: ["ecto.setup", "test"],
       "ecto.reset": ["ecto.drop --quiet", "ecto.setup"]
     ]
-  end
-
-  defp env() do
-    [sort_by: :inserted_at, sort_direction: :asc]
   end
 end
