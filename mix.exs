@@ -43,8 +43,7 @@ defmodule EctoJuno.MixProject do
 
   defp package() do
     [
-      files: ~w(lib priv .formatter.exs mix.exs README* readme* LICENSE*
-                license* CHANGELOG* changelog* src),
+      files: ~w(.formatter.exs mix.exs README.md lib),
       licenses: ["MIT"],
       links: %{"GitHub" => @source_url}
     ]
