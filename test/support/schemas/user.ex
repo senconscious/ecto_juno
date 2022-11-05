@@ -1,21 +1,12 @@
 defmodule EctoJuno.Schemas.User do
   @moduledoc """
-    Test schema for user model
+    Sample schema for tests
   """
-
   use Ecto.Schema
 
-  import Ecto.Changeset
-
-  schema "users" do
-    field :name, :string
+  embedded_schema do
     field :age, :integer
-    field :external_id, Ecto.UUID
-
+    field :name, :string
     timestamps()
-  end
-
-  def changeset(user, attrs) do
-    cast(user, attrs, [:name, :age, :external_id])
   end
 end

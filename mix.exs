@@ -8,20 +8,15 @@ defmodule EctoJuno.MixProject do
       elixir: "~> 1.14",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
-      aliases: aliases(),
       deps: deps(),
-      preferred_cli_env: [
-        "ecto.setup": :test,
-        "ecto.reset": :test
-      ]
+      test_coverage: [ignore_modules: [EctoJuno.Schemas.User]]
     ]
   end
 
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger],
-      mod: mod(Mix.env())
+      extra_applications: [:logger]
     ]
   end
 
@@ -29,7 +24,7 @@ defmodule EctoJuno.MixProject do
   defp deps do
     [
       {:ecto, "~> 3.8"},
-      {:ecto_sql, "~> 3.0", only: [:test]},
+      {:ecto_sql, "~> 3.0"},
       {:postgrex, ">= 0.0.0", only: [:test]},
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
       {:ex_doc, "~> 0.27", only: :dev, runtime: false}
@@ -39,19 +34,4 @@ defmodule EctoJuno.MixProject do
   # Specifies which paths to compile per environment.
   defp elixirc_paths(:test), do: ["lib", "test/support"]
   defp elixirc_paths(_), do: ["lib"]
-
-  # Specifies load application only for test environment
-  defp mod(:test) do
-    {EctoJuno.Application, []}
-  end
-
-  defp mod(_), do: {}
-
-  defp aliases do
-    [
-      "ecto.setup": ["ecto.create --quiet", "ecto.migrate --quiet"],
-      test: ["ecto.setup", "test"],
-      "ecto.reset": ["ecto.drop --quiet", "ecto.setup"]
-    ]
-  end
 end

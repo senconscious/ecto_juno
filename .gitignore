@@ -25,4 +25,4 @@ ecto_juno-*.tar
 # Temporary files, for example, from tests.
 /tmp/
 
-.env
+.DS_Store
