@@ -8,7 +8,7 @@ defmodule EctoJuno.Helpers.SortingHelpers do
 
     If not found returns `nil`
   """
-  @spec map_string_field_to_atom(String.t(), atom() | list()) :: atom() | nil
+  @spec map_string_field_to_atom(String.t(), atom() | list()) :: atom()
   def map_string_field_to_atom(string_field, schema_or_list)
 
   def map_string_field_to_atom(string_field, schema) when is_atom(schema) do

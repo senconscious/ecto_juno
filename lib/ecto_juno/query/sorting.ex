@@ -1,6 +1,6 @@
 defmodule EctoJuno.Query.Sorting do
   @moduledoc """
-    Module for sorting base query
+    Module for sorting query
   """
 
   import Ecto.Query, only: [order_by: 3]
@@ -11,9 +11,9 @@ defmodule EctoJuno.Query.Sorting do
     Sorts query
 
     ### Parameters
-    - `query`: the query you want to sort
-    - `schema_or_allowed_fields`: must either be the model's Ecto.Schema either list of atom keys
-    - `params`: map that can have `sort_by`, `sort_direction` fields with string values
+    - `query`: a query you want to sort
+    - `schema_or_allowed_fields`: either an ecto schema module either a list of which elements are atoms
+    - `params`: a map that can have `sort_by`, `sort_direction` keys with string values
 
     ### Usage
     ```elixir
@@ -30,16 +30,18 @@ defmodule EctoJuno.Query.Sorting do
     end
     ```
 
-    You can also pass `sort_by` and `sort_direction` as atom keys
-
-    #### Invoking `sort_query/2`
+    You can also pass `sort_by` and `sort_direction` as atom keys:
     ```elixir
-      Sorting.sort_query(query, User)
+      Sorting.sort_query(query, User, %{sort_by: sort_by, sort_direction: sort_direction})
     ```
-    In such case sorting params will be extracted from configuration if exist. If not than default sorting: ascending by `inserted_at` field will be applied
+
+    The default sorting is by `inserted_at` field with ascending order.
+
+    For missing sorting parameters the default values will be used.
+    Same applies and for invalid sorting parameters
   """
   @spec sort_query(any(), atom() | list(), map()) :: Ecto.Query.t()
-  def sort_query(query, schema_or_allowed_fields, params) do
+  def sort_query(query, schema_or_allowed_fields, params \\ %{}) do
     %{sort_by: sort_by, sort_direction: sort_direction} =
       SortingParams.changeset!(params, schema_or_allowed_fields)
 

@@ -2,7 +2,7 @@ defmodule EctoJuno.MixProject do
   use Mix.Project
 
   @source_url "https://github.com/senconscious/ecto_juno"
-  @version "0.1.0"
+  @version "0.1.1"
 
   def project do
     [
@@ -43,7 +43,7 @@ defmodule EctoJuno.MixProject do
 
   defp package() do
     [
-      files: ~w(.formatter.exs mix.exs README.md lib),
+      files: ~w(.formatter.exs mix.exs README.md CHANGELOG.md lib),
       licenses: ["MIT"],
       links: %{"GitHub" => @source_url}
     ]

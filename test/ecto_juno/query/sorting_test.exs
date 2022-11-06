@@ -6,6 +6,16 @@ defmodule EctoJuno.Query.SortingTest do
 
   @moduletag :sorting
 
+  test "sort_query/2 with is invoked as a default sorting" do
+    query =
+      "SELECT * FROM Table"
+      |> Sorting.sort_query(User)
+      |> inspect()
+
+    assert query ==
+             "#Ecto.Query<from s0 in \"SELECT * FROM Table\", order_by: [asc: s0.inserted_at]>"
+  end
+
   test "sort_query/3 with default params" do
     assert sorting_fixture(User) ==
              "#Ecto.Query<from s0 in \"SELECT * FROM Table\", order_by: [asc: s0.inserted_at]>"

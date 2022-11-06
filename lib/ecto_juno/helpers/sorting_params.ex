@@ -14,12 +14,15 @@ defmodule EctoJuno.Helpers.SortingParams do
 
   @primary_key false
   embedded_schema do
-    field :sort_by, :string, skip_default_validation: true
-    field :sort_direction, :string, skip_default_validation: true
+    field :sort_by, :string, default: @default_sort_by, skip_default_validation: true
+
+    field :sort_direction, :string,
+      default: @default_sort_direction,
+      skip_default_validation: true
   end
 
   @doc """
-    Validation function. Relies on `Ecto.Changeset`. In the end invokes `apply_action!/2`. But it should never raise
+    Validation function. Relies on `Ecto.Changeset`. In the end invokes `apply_action!/2`
   """
   @spec changeset!(map(), atom() | list()) :: map()
   def changeset!(attrs, schema_or_list) do
@@ -27,6 +30,7 @@ defmodule EctoJuno.Helpers.SortingParams do
     |> cast(attrs, [:sort_by, :sort_direction])
     |> atomize_sort_by(schema_or_list)
     |> atomize_sort_direction()
+    |> validate_required([:sort_by, :sort_direction])
     |> apply_action!(:insert)
   end
 
@@ -41,9 +45,10 @@ defmodule EctoJuno.Helpers.SortingParams do
   end
 
   defp atomize_sort_by(changeset, _schema_or_list),
-    do: put_change(changeset, :sort_by, @default_sort_by)
+    do: changeset
 
-  defp atomize_sort_direction(%{changes: %{sort_direction: direction}} = changeset) do
+  defp atomize_sort_direction(%{changes: %{sort_direction: direction}} = changeset)
+       when is_binary(direction) do
     sort_direction =
       direction
       |> Helpers.map_string_field_to_atom([:desc, :asc])
@@ -53,7 +58,7 @@ defmodule EctoJuno.Helpers.SortingParams do
   end
 
   defp atomize_sort_direction(changeset),
-    do: put_change(changeset, :sort_direction, @default_sort_direction)
+    do: changeset
 
   defp traverse_nil_value(nil, default), do: default
 
