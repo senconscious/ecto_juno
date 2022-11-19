@@ -2,7 +2,7 @@ defmodule EctoJuno.MixProject do
   use Mix.Project
 
   @source_url "https://github.com/senconscious/ecto_juno"
-  @version "0.2.0"
+  @version "0.3.0"
 
   def project do
     [
@@ -24,7 +24,8 @@ defmodule EctoJuno.MixProject do
         check: :test
       ],
       dialyzer: [
-        plt_file: {:no_warn, "priv/plts/dialyzer.plt"}
+        plt_file: {:no_warn, "priv/plts/dialyzer.plt"},
+        ignore_warnings: ".dialyzer_ignore.exs"
       ]
     ]
   end
@@ -62,7 +63,8 @@ defmodule EctoJuno.MixProject do
     [
       EctoJuno.Accounts.User,
       EctoJuno.Repo,
-      EctoJuno.Posts.Post
+      EctoJuno.Posts.Post,
+      EctoJuno.Fixtures
     ]
   end
 
