@@ -1,8 +1,8 @@
 defmodule EctoJuno.Helpers.SortingHelpersTest do
   use ExUnit.Case
 
+  alias EctoJuno.Accounts.User
   alias EctoJuno.Helpers.SortingHelpers
-  alias EctoJuno.Schemas.User
 
   @moduletag :sorting_helpers
 

@@ -3,12 +3,12 @@ A simple query sorting library
 
 ## Installation
 
-Add `:ecto_juno` to the list of dependencies in `mix.exs`:
+Add `:ecto_juno` to the list of dependencies in `mix.exs`
 
 ```elixir
 def deps do
   [
-    {:ecto_juno, git: "https://github.com/senconscious/ecto_juno"}
+    {:ecto_juno, "~> 0.2.0"}
   ]
 end
 ```
@@ -74,8 +74,32 @@ If you'll pass invalid sorting parameters, than default sorting ones will be use
 ```
 by default will sort query by `inserted_at` field with `asc` mode
 
-Note:
-- Sorting by joint query is not supported
+## Sorting by joint query
+To apply sorting by joint query use `EctoJuno.Query.Sorting.sort_query/4` which accepts the same arguments as
+`EctoJuno.Query.Sorting.sort_query/3` except new fourth argument - joint query binding name.
+
+Let's assume that you also have a posts table that related to users table as many to one. And posts have `title` column. Than your sorting function will be something like:
+```elixir
+  alias EctoJuno.Query.Sorting
+
+  def sort_users_by_posts do
+    params = %{"sort_by" => "title", "sort_direction" => "desc"}
+
+    User
+    |> join(:left, [u], p in assoc(u, :posts), as: :posts)
+    |> Sorting.sort_query(Post, params, :posts)
+    |> Repo.all()
+  end
+```
+
+If you provide binding that query doesn't have than sorting by base query in default mode will be applied
+
+## Be aware of
 - Sorting with modes different from asc and desc is not supported
 - No custom validators for parameters supported
 - If you pass sort_by and sort_direction values not as strings you'll get exception
+
+## Testing
+1. Clone repo: `git clone https://github.com/senconscious/ecto_juno`
+2. Set `DATABASE_URL` environment variable before running tests locally
+3. Run `mix test --cov`

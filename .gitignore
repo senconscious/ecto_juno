@@ -26,3 +26,6 @@ ecto_juno-*.tar
 /tmp/
 
 .DS_Store
+
+/priv/plts/*.plt
+/priv/plts/*.plt.hash
