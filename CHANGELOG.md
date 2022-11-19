@@ -1,5 +1,9 @@
 # CHANGELOG for v0.x
 
+## v0.3.0 (2022-11-20)
+### Enhancements
+* Added sorting template with custom schema pickup
+
 ## v0.2.0 (2022-11-19)
 ### Enhancements
 * Moved from inspecting query on tests. Added sample schemas and repo
