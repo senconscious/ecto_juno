@@ -12,12 +12,19 @@ defmodule EctoJuno.MixProject do
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      test_coverage: [ignore_modules: [EctoJuno.Schemas.User]],
+      aliases: aliases(),
+      test_coverage: [ignore_modules: test_ignored_modules()],
       description: "A simple query sorting library for Elixir",
       package: package(),
       source_url: @source_url,
       docs: [
         extras: ["README.md"]
+      ],
+      preferred_cli_env: [
+        check: :test
+      ],
+      dialyzer: [
+        plt_file: {:no_warn, "priv/plts/dialyzer.plt"}
       ]
     ]
   end
@@ -33,7 +40,9 @@ defmodule EctoJuno.MixProject do
       {:ecto, "~> 3.8"},
       {:ecto_sql, "~> 3.0"},
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
-      {:ex_doc, "~> 0.27", only: :dev, runtime: false}
+      {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
+      {:ex_doc, "~> 0.27", only: :dev, runtime: false},
+      {:postgrex, ">= 0.15.0", only: :test}
     ]
   end
 
@@ -46,6 +55,19 @@ defmodule EctoJuno.MixProject do
       files: ~w(.formatter.exs mix.exs README.md CHANGELOG.md lib),
       licenses: ["MIT"],
       links: %{"GitHub" => @source_url}
+    ]
+  end
+
+  defp test_ignored_modules do
+    [
+      EctoJuno.Schemas.User,
+      EctoJuno.Repo
+    ]
+  end
+
+  defp aliases do
+    [
+      check: ["format --check-formatted", "credo --strict", "dialyzer", "test --cover"]
     ]
   end
 end

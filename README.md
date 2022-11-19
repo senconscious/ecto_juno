@@ -3,12 +3,12 @@ A simple query sorting library
 
 ## Installation
 
-Add `:ecto_juno` to the list of dependencies in `mix.exs`:
+Add `:ecto_juno` to the list of dependencies in `mix.exs`
 
 ```elixir
 def deps do
   [
-    {:ecto_juno, git: "https://github.com/senconscious/ecto_juno"}
+    {:ecto_juno, "~> 0.1.1"}
   ]
 end
 ```
@@ -74,8 +74,13 @@ If you'll pass invalid sorting parameters, than default sorting ones will be use
 ```
 by default will sort query by `inserted_at` field with `asc` mode
 
-Note:
+## Be aware of
 - Sorting by joint query is not supported
 - Sorting with modes different from asc and desc is not supported
 - No custom validators for parameters supported
 - If you pass sort_by and sort_direction values not as strings you'll get exception
+
+## Testing
+1. Clone repo: `git clone https://github.com/senconscious/ecto_juno`
+2. Set `DATABASE_URL` environment variable before running tests locally
+3. Run `mix test --cov`

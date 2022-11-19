@@ -1,47 +1,139 @@
 defmodule EctoJuno.Query.SortingTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
+  alias Ecto.Adapters.SQL.Sandbox
+  alias EctoJuno.Accounts.User
   alias EctoJuno.Query.Sorting
-  alias EctoJuno.Schemas.User
+  alias EctoJuno.Repo
 
   @moduletag :sorting
 
-  test "sort_query/2 with is invoked as a default sorting" do
-    query =
-      "SELECT * FROM Table"
-      |> Sorting.sort_query(User)
-      |> inspect()
+  setup_all do
+    :ok = Sandbox.checkout(Repo)
 
-    assert query ==
-             "#Ecto.Query<from s0 in \"SELECT * FROM Table\", order_by: [asc: s0.inserted_at]>"
+    for {age, name} <- [{21, "Asuka"}, {18, "Zimmer"}] do
+      create_user!(%{age: age, name: name})
+      Process.sleep(1000)
+    end
+
+    Sandbox.mode(Repo, {:shared, self()})
+
+    :ok
   end
 
-  test "sort_query/3 with default params" do
-    assert sorting_fixture(User) ==
-             "#Ecto.Query<from s0 in \"SELECT * FROM Table\", order_by: [asc: s0.inserted_at]>"
+  describe "test data is ready" do
+    test "ensure users in database" do
+      data = Repo.all(User)
+      assert Enum.count(data) == 2
+    end
   end
 
-  test "sort_query/3 with default params and allowed fields list" do
-    assert sorting_fixture([:inserted_at]) ==
-             "#Ecto.Query<from s0 in \"SELECT * FROM Table\", order_by: [asc: s0.inserted_at]>"
+  describe "sort_query/2" do
+    test "OK with allowed fields as list" do
+      assert [first, second] = user_default_sorting_fixture([])
+      assert NaiveDateTime.compare(first, second) == :lt
+    end
+
+    test "OK with schema" do
+      assert [first, second] = user_default_sorting_fixture(User)
+      assert NaiveDateTime.compare(first, second) == :lt
+    end
   end
 
-  test "sort_query/3 with valid params" do
-    assert sorting_fixture(User, %{"sort_by" => "age", "sort_direction" => "desc"}) ==
-             "#Ecto.Query<from s0 in \"SELECT * FROM Table\", order_by: [desc: s0.age]>"
+  describe "sort_query/3" do
+    test "default sorting" do
+      assert [first, second] = user_sorting_fixture()
+      assert NaiveDateTime.compare(first, second) == :lt
+    end
+
+    test "sort by valid field asc" do
+      assert [first, second] =
+               user_sorting_fixture(%{sort_by: "age", sort_direction: "asc"}, :age)
+
+      assert first < second
+    end
+
+    test "sort by valid field desc" do
+      assert [first, second] =
+               user_sorting_fixture(%{sort_by: "age", sort_direction: "desc"}, :age)
+
+      assert first > second
+    end
+
+    test "sort by invalid field desc" do
+      assert [first, second] =
+               user_sorting_fixture(%{sort_by: "invalid_field", sort_direction: "desc"})
+
+      assert NaiveDateTime.compare(first, second) == :gt
+    end
+
+    test "sort by valid field invalid mode" do
+      assert [first, second] =
+               user_sorting_fixture(%{sort_by: "age", sort_direction: "invalid_mode"}, :age)
+
+      assert first < second
+    end
+
+    test "sort by invalid field invalid mode" do
+      assert [first, second] =
+               user_sorting_fixture(%{sort_by: "invalid_field", sort_direction: "invalid_mode"})
+
+      assert NaiveDateTime.compare(first, second) == :lt
+    end
+
+    test "sort by valid field desc with allowed fields as list" do
+      assert [first, second] =
+               user_sorting_fixture(%{sort_by: "age", sort_direction: "desc"}, :age, [
+                 :age,
+                 :id,
+                 :name
+               ])
+
+      assert first > second
+    end
+
+    test "sort by invalid field desc with allowed fields as list" do
+      assert [first, second] =
+               user_sorting_fixture(%{sort_by: "age", sort_direction: "desc"}, :inserted_at, [
+                 :id,
+                 :name
+               ])
+
+      assert NaiveDateTime.compare(first, second) == :gt
+    end
   end
 
-  test "sort_query/3 with invalid params" do
-    assert sorting_fixture(User, %{
-             "sort_by" => "invalid_field",
-             "sort_direction" => "invalid_sorting_mode"
-           }) ==
-             "#Ecto.Query<from s0 in \"SELECT * FROM Table\", order_by: [asc: s0.inserted_at]>"
+  defp create_user!(attrs) do
+    %User{}
+    |> User.changeset(attrs)
+    |> Repo.insert!()
   end
 
-  defp sorting_fixture(schema_or_list, params \\ %{}) do
-    "SELECT * FROM Table"
-    |> Sorting.sort_query(schema_or_list, params)
-    |> inspect()
+  defp user_sorting_fixture(
+         params \\ %{},
+         field \\ :inserted_at,
+         schema_or_allowed_fields \\ User
+       ) do
+    params
+    |> list_sorted_users(schema_or_allowed_fields)
+    |> Enum.map(fn user -> Map.fetch!(user, field) end)
+  end
+
+  defp list_sorted_users(params, schema_or_allowed_fields) do
+    User
+    |> Sorting.sort_query(schema_or_allowed_fields, params)
+    |> Repo.all()
+  end
+
+  defp user_default_sorting_fixture(schema_or_allowed_fields) do
+    schema_or_allowed_fields
+    |> list_default_sorted_users()
+    |> Enum.map(fn %{inserted_at: field} -> field end)
+  end
+
+  defp list_default_sorted_users(schema_or_allowed_fields) do
+    User
+    |> Sorting.sort_query(schema_or_allowed_fields)
+    |> Repo.all()
   end
 end
