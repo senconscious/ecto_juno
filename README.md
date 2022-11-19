@@ -148,4 +148,3 @@ Passing parameters may be done with a map either with string either atom keys. B
 1. Clone repo: `git clone https://github.com/senconscious/ecto_juno`
 2. Set `DATABASE_URL` environment variable before running tests locally
 3. Run `mix check`
-```
