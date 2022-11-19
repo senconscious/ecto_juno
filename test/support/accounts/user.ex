@@ -6,9 +6,14 @@ defmodule EctoJuno.Accounts.User do
 
   import Ecto.Changeset
 
+  alias EctoJuno.Posts.Post
+
   schema "users" do
+    has_many :posts, Post, foreign_key: :author_id
+
     field :age, :integer
     field :name, :string
+
     timestamps()
   end
 

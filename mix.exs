@@ -2,7 +2,7 @@ defmodule EctoJuno.MixProject do
   use Mix.Project
 
   @source_url "https://github.com/senconscious/ecto_juno"
-  @version "0.1.1"
+  @version "0.2.0"
 
   def project do
     [
@@ -60,8 +60,9 @@ defmodule EctoJuno.MixProject do
 
   defp test_ignored_modules do
     [
-      EctoJuno.Schemas.User,
-      EctoJuno.Repo
+      EctoJuno.Accounts.User,
+      EctoJuno.Repo,
+      EctoJuno.Posts.Post
     ]
   end
 
