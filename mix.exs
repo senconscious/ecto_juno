@@ -21,7 +21,9 @@ defmodule EctoJuno.MixProject do
         extras: ["README.md"]
       ],
       preferred_cli_env: [
-        check: :test
+        check: :test,
+        check_code_health: :test,
+        check_coverage: :test
       ],
       dialyzer: [
         plt_file: {:no_warn, "priv/plts/dialyzer.plt"},
@@ -70,7 +72,13 @@ defmodule EctoJuno.MixProject do
 
   defp aliases do
     [
-      check: ["format --check-formatted", "credo --strict", "dialyzer", "test --cover"]
+      check: ["check_code_health", "check_coverage"],
+      check_code_health: [
+        "format --check-formatted",
+        "credo --strict",
+        "dialyzer --format github"
+      ],
+      check_coverage: "test --cover"
     ]
   end
 end

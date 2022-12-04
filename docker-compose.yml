@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+  ecto_juno:
+    environment:
+      DATABASE_URL: "ecto://postgres:postgres@db:5432/ecto_juno_test"
+    build: .
+    depends_on: 
+      - db
+    volumes:
+      - ecto_juno_dialyzer:/app/priv/plts
+  db:
+    image: postgres:15.0
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes: 
+      - ecto_juno_db:/var/lib/postgresql/data
+
+volumes:
+  ecto_juno_db:
+  ecto_juno_dialyzer:

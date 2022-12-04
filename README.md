@@ -1,5 +1,7 @@
 # EctoJuno
 
+[![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fsenconscious%2Fecto_juno%2Fbadge%3Fref%3Ddevelop&style=for-the-badge)](https://actions-badge.atrox.dev/senconscious/ecto_juno/goto?ref=develop)
+
 A simple query sorting library
 
 ## Installation
@@ -101,27 +103,32 @@ Let's assume that you also have a posts table that related to users table as man
 If you provide binding that query doesn't have than sorting by base query in default mode will be applied
 
 ## Custom sorting
+
 Define your custom sorting module
 
 ```elixir
       defmodule Sample.UserSorting do
-      use EctoJuno.Query.SortingTemplate
+        use EctoJuno.Query.SortingTemplate
 
-        def prepare_sorting_params("post_" <> field) do
-          {Post, field, :posts}
-        end
+          # Maybe valid sort_by key for posts query provided
+          def prepare_sorting_params("post_" <> field) do
+            {Post, field, :posts}
+          end
 
-        def prepare_sorting_params(nil) do
-          {User, "inserted_at"}
-        end
+          # No sort_by key case
+          def prepare_sorting_params(nil) do
+            {User, "inserted_at"}
+          end
 
-        def prepare_sorting_params(field) do
-          {User, field}
-        end
+          # Maybe valid sort_by key for base query provided
+          def prepare_sorting_params(field) do
+            {User, field}
+          end
       end
 ```
 
 Then you can use it like
+
 ```elixir
   alias Sample.UserSorting
 
@@ -141,10 +148,17 @@ Then you can use it like
 Passing parameters may be done with a map either with string either atom keys. But not mixed.
 
 ## Be aware of
+
 - Sorting with modes different from asc and desc is not supported
 - If you pass sort_by and sort_direction values not as strings you'll get exception
 
 ## Testing
-1. Clone repo: `git clone https://github.com/senconscious/ecto_juno`
-2. Set `DATABASE_URL` environment variable before running tests locally
-3. Run `mix check`
+
+Clone repo: `git clone https://github.com/senconscious/ecto_juno`
+
+1. Set `DATABASE_URL` environment variable before running tests locally
+2. Run `mix check`
+
+To test with docker: `docker compose build`
+1. Run: `docker compose build`
+2. Run: `docker-compose run --rm ecto_juno mix check`
