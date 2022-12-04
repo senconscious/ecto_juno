@@ -1,0 +1,12 @@
+_build/
+.elixir_ls/
+.github/
+cover/
+deps/
+doc/
+priv/plts/
+README.md
+CHANGELOG.md
+.git
+.gitignore
+Makefile
